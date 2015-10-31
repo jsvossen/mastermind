@@ -8,23 +8,43 @@ class Mastermind
 	attr_accessor :guess
 
 	#init with a new code
-	def initialize(code=nil)
+	def initialize
 		@code
 		@guess
-		new_code(code)
-		play
+
+		input = ""
+		until input=="codemaker" || input=="codebreaker" do
+			puts "Are you the CODEMAKER or CODEBREAKER?"
+			input = gets.chomp.downcase
+		end
+
+		if input == "codebreaker"
+			@code = new_code
+			human_play
+		else
+			puts "Enter a code for the computer to guess:"
+			user_code = gets.chomp
+			until is_valid?(user_code) do
+				puts "Enter #{CODE_SIZE} numbers between #{CODE_RANGE.first} and #{CODE_RANGE.last}:"
+				user_code = gets.chomp
+			end
+			@code = user_code.split(//)
+			ai_play
+		end
 	end
 
-	#if a code is not given, creat a random code
-	def new_code(code=nil)
-		if !code
-			@code = []
-			CODE_SIZE.times do
-				@code << rand(CODE_RANGE.first..CODE_RANGE.last).to_s
-			end
-		else
-			@code = code
+	#creat a random code
+	def new_code
+		code = []
+		CODE_SIZE.times do
+			@code << rand(CODE_RANGE.first..CODE_RANGE.last).to_s
 		end
+		code
+	end
+
+	#is user generated code valid?
+	def is_valid?(code)
+		code.length == CODE_SIZE && code.split(//).all? { |c| c.to_i >= CODE_RANGE.first && c.to_i <= CODE_RANGE.last }
 	end
 
 	#does the guess match the code?
@@ -54,7 +74,7 @@ class Mastermind
 	end
 
 	#play until the guess is correct or turns run out
-	def play
+	def human_play
 
 		GAME_LENGTH.times do |turn|
 			break if correct_guess?
@@ -64,6 +84,21 @@ class Mastermind
 		end
 
 		puts correct_guess? ? "You win!" : "Game over! The code was: #{@code.to_s}"
+	end
+
+	def ai_play
+		GAME_LENGTH.times do |turn|
+			break if correct_guess?
+			guess = []
+			CODE_SIZE.times do
+				guess << rand(CODE_RANGE.first..CODE_RANGE.last).to_s
+			end
+			guess = guess.join
+			puts "Guess #{turn} of #{GAME_LENGTH}:"
+			puts guess
+			puts hint(guess)
+		end
+		puts correct_guess? ? "I win!" : "I have failed :("
 	end
 
 end
