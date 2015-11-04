@@ -4,10 +4,8 @@ class Mastermind
 	CODE_RANGE = [1,6] #range of possible digits
 	GAME_LENGTH = 12 #number of turns
 
-	attr_reader :code
-	attr_accessor :guess
+	attr_reader :code, :guess
 
-	#init with a new code
 	def initialize
 		@code
 		@guess
