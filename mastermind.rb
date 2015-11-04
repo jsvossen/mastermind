@@ -80,6 +80,10 @@ class Mastermind
 			break if correct_guess?
 			puts "Guess #{turn+1} of #{GAME_LENGTH}:"
 			@guess = gets.chomp
+			until is_valid?(@guess) do
+				puts "Enter #{CODE_SIZE} numbers between #{CODE_RANGE.first} and #{CODE_RANGE.last}:"
+				@guess = gets.chomp
+			end
 			puts hint(@guess).join
 		end
 
